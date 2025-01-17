@@ -29,3 +29,7 @@ The Jiitak Project is a web application built with Python Flask, designed to int
 - Docker
 - Jenkins
 - AWS Account
+
+## Accessing the Web Application
+- url: http://13.200.27.78
+

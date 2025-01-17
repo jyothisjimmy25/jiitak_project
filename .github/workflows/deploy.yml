@@ -45,23 +45,19 @@ jobs:
           docker build -t ${{ secrets.DOCKER_USERNAME }}/flask-app:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
 
-      # Step 7: Configure AWS CLI
-      - name: Configure AWS CLI
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      # Step 8: Deploy to EC2 instance
+      # Step 7: Deploy to EC2 instance
       - name: Deploy to EC2
         run: |
           # Set the EC2 instance details
-          EC2_INSTANCE_IP='3.108.65.214'  # Replace with your EC2 instance public IP
-          SSH_USER='ubuntu'  # Replace with your EC2 SSH username
-          
+          EC2_INSTANCE_IP='your_ec2_instance_ip'  # Replace with your EC2 instance public IP
+          SSH_USER='your_ssh_user'  # Replace with your EC2 SSH username
+
+          # Create a temporary file for the SSH private key
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+
           # Command to connect to the EC2 instance and run Docker commands
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_PRIVATE_KEY }} $SSH_USER@$EC2_INSTANCE_IP << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i private_key.pem $SSH_USER@$EC2_INSTANCE_IP << 'EOF'
             # Pull the latest image
             docker pull ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
             
@@ -74,3 +70,6 @@ jobs:
             # Run the new container
             docker run -d --name flask-app -p 80:80 ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
           EOF
+
+          # Clean up the private key file
+          rm private_key.pem

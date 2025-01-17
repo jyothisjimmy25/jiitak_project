@@ -41,33 +41,54 @@
         }
 
         #join-form {
-            margin-top: 20px;
-            padding: 20px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px;
             border: 1px solid #ddd;
-            border-radius: 10px;
+            border-radius: 15px;
             background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            display: none;
         }
 
-        form {
+        #join-form form {
             display: flex;
             flex-direction: column;
             align-items: stretch;
         }
 
-        label {
+        #join-form label {
             margin: 10px 0 5px;
             font-weight: bold;
             font-size: 14px;
         }
 
-        input {
+        #join-form input {
             padding: 10px;
             font-size: 14px;
             border: 1px solid #ccc;
             border-radius: 5px;
             width: 100%;
+        }
+
+        #join-form .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s;
+        }
+
+        #join-form .close-btn:hover {
+            color: #333;
         }
 
         ul {
@@ -109,7 +130,8 @@
 <body>
     <h1>Welcome to the Web App</h1>
     <button onclick="document.getElementById('join-form').style.display='block'">Join</button>
-    <div id="join-form" style="display:none;">
+    <div id="join-form">
+        <button class="close-btn" onclick="document.getElementById('join-form').style.display='none'">&times;</button>
         <form method="post" action="/join">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>

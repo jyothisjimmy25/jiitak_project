@@ -53,15 +53,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # Debugging Step: Check Docker images
-      - name: List Docker images
-        run: docker images
-
-      # Step 8: Update ECS Service
-      - name: Deploy to ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: 'flask-app-task'  # Replace with your task definition name
-          service: 'flask-app-service'        # Replace with your ECS service name
-          cluster: 'flask-app-cluster'        # Replace with your ECS cluster name
-          wait-for-service-stability: true
+      # Step 8: Deploy to EC2 instance
+      - name: Deploy to EC2
+        run: |
+          # Set the EC2 instance details
+          EC2_INSTANCE_IP='3.108.65.214'  # Replace with your EC2 instance public IP
+          SSH_USER='ubuntu'  # Replace with your EC2 SSH username
+          
+          # Command to connect to the EC2 instance and run Docker commands
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_SSH_PRIVATE_KEY }} $SSH_USER@$EC2_INSTANCE_IP << 'EOF'
+            # Pull the latest image
+            docker pull ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
+            
+            # Stop and remove the currently running container if it exists
+            if [ "$(docker ps -q -f name=flask-app)" ]; then
+              docker stop flask-app
+              docker rm flask-app
+            fi
+            
+            # Run the new container
+            docker run -d --name flask-app -p 80:80 ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
+          EOF

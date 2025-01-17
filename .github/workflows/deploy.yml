@@ -53,11 +53,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      # Debugging Step: Check Docker images
+      - name: List Docker images
+        run: docker images
+
       # Step 8: Update ECS Service
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: 'flask-app-task'  # Replace with your task definition name
-          service: 'flask-app-service'  # Replace with your ECS service name
-          cluster: 'flask-app-cluster'   # Replace with your ECS cluster name
+          service: 'flask-app-service'        # Replace with your ECS service name
+          cluster: 'flask-app-cluster'        # Replace with your ECS cluster name
           wait-for-service-stability: true

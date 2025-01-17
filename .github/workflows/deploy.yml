@@ -57,7 +57,7 @@ jobs:
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: flask-app-task  # Replace with your task definition name
-          service: <your-ecs-service-name>  # Replace with your ECS service name
-          cluster: <your-ecs-cluster-name>   # Replace with your ECS cluster name
+          task-definition: 'flask-app-task'  # Replace with your task definition name
+          service: 'flask-app-service'  # Replace with your ECS service name
+          cluster: 'flask-app-cluster'   # Replace with your ECS cluster name
           wait-for-service-stability: true

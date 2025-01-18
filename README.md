@@ -142,3 +142,26 @@ sudo systemctl reload nginx
 ```
 
 ---
+
+# Shell Script for Jenkins to Build and Run Docker Container
+
+This script checks if a Docker container named `flask_app` is already running. If it exists, the script stops and removes it. Then, it builds a new Docker image from the current directory and runs the container with the specified port mapping.
+
+```bash
+#!/bin/bash
+
+# Check if the container is already running and remove it if it exists
+if [ $(docker ps -q -f name=flask_app) ]; then
+    echo "Stopping and removing existing container..."
+    docker stop flask_app
+    docker rm flask_app
+fi
+
+# Build the Docker image
+echo "Building the Docker image..."
+docker build . -t flask-app:latest
+
+# Run the Docker container
+echo "Running the Docker container..."
+docker run -d -p 7000:7000 --name flask_app flask-app:latest
+
